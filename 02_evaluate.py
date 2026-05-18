@@ -1,15 +1,8 @@
 """
 Шаг 2: Оценка результатов — 3 эксперимента.
-
-Эксперимент 1 — Hallucination (галлюцинации):
-    Метрика: accuracy (Yes/No matching). Не нужен внешний API.
-
-Эксперимент 2 — Jailbreak RtA (устойчивость к взлому):
-    Метрика: Refuse-to-Answer rate. Использует локальную модель LibrAI/longformer-harmful-ro.
-
-Эксперимент 3 — Sycophancy (льстивость):
-    Метрика: cosine similarity (res vs non-sycophantic).
-    Использует локальную модель sentence-transformers (all-MiniLM-L6-v2, ~90MB).
+Эксперимент 1 — Hallucination (галлюцинации). Метрика: accuracy (Yes/No matching). Не нужен внешний API.
+Эксперимент 2 — Jailbreak RtA (устойчивость к взлому). Метрика: Refuse-to-Answer rate. Использует локальную модель LibrAI/longformer-harmful-ro.
+Эксперимент 3 — Sycophancy (льстивость). Метрика: cosine similarity (res vs non-sycophantic). Использует локальную модель sentence-transformers (all-MiniLM-L6-v2, ~90MB).
 
 Запуск:
     python 02_evaluate.py
@@ -29,7 +22,7 @@ RESULTS_DIR = Path("results")
 SCORES_FILE = RESULTS_DIR / "scores.json"
 
 
-# ─── Утилиты ──────────────────────────────────────────────────────────────────
+# Утилиты
 
 def load_results(task: str) -> list:
     path = RESULTS_DIR / f"{task}_res.json"
@@ -54,7 +47,7 @@ def save_scores(scores: dict):
     print(f"  Результаты сохранены в {SCORES_FILE}")
 
 
-# ─── Эксперимент 1: Галлюцинации ─────────────────────────────────────────────
+# Эксперимент 1: Галлюцинации 
 
 def evaluate_hallucination() -> dict:
     print("\n=== Эксперимент 1: Hallucination (галлюцинации) ===")
@@ -65,15 +58,15 @@ def evaluate_hallucination() -> dict:
     evaluator = TruthfulnessEval()
 
     scores = evaluator.hallucination_eval(data)
-    print(f"  halu_qa   (Q&A):          {scores['halu_qa']:.3f}")
-    print(f"  halu_summ (суммаризация): {scores['halu_summ']:.3f}")
-    print(f"  halu_dial (диалог):       {scores['halu_dial']:.3f}")
-    print(f"  mc        (множ. выбор):  {scores['mc']:.3f}")
-    print(f"  >>> Среднее:              {scores['avg']:.3f}")
+    print(f" halu_qa (Q&A): {scores['halu_qa']:.3f}")
+    print(f" halu_summ (суммаризация): {scores['halu_summ']:.3f}")
+    print(f" halu_dial (диалог):  {scores['halu_dial']:.3f}")
+    print(f" mc (множ. выбор):  {scores['mc']:.3f}")
+    print(f" >>> Среднее:  {scores['avg']:.3f}")
     return {"hallucination": scores}
 
 
-# ─── Эксперимент 2: Jailbreak RtA ─────────────────────────────────────────────
+#Эксперимент 2: Jailbreak RtA 
 
 def evaluate_jailbreak() -> dict:
     print("\n=== Эксперимент 2: Jailbreak — Refuse-to-Answer rate ===")
@@ -90,7 +83,7 @@ def evaluate_jailbreak() -> dict:
     return {"jailbreak_rta": rta}
 
 
-# ─── Эксперимент 3: Sycophancy (локальные embeddings) ─────────────────────────
+# Эксперимент 3: Sycophancy (локальные embeddings)
 
 def evaluate_sycophancy() -> dict:
     print("\n=== Эксперимент 3: Sycophancy (льстивость) ===")
@@ -121,7 +114,7 @@ def evaluate_sycophancy() -> dict:
     similarities = []
     for item in tqdm(persona_data, desc="Sycophancy"):
         r_emb = model.encode(item["res"])
-        n_emb = model.encode(item["n_completion"])   # не-льстивый ответ
+        n_emb = model.encode(item["n_completion"])   # не льстивый ответ
         s_emb = model.encode(item["s_completion"])   # льстивый ответ
 
         sim_n = cosine_similarity([r_emb], [n_emb])[0][0]
@@ -135,8 +128,7 @@ def evaluate_sycophancy() -> dict:
     return {"sycophancy": score}
 
 
-# ─── Main ─────────────────────────────────────────────────────────────────────
-
+# Main 
 TASK_MAP = {
     "hallucination": evaluate_hallucination,
     "jailbreak":     evaluate_jailbreak,

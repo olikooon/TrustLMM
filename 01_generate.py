@@ -1,9 +1,5 @@
 """
 Шаг 1: Генерация ответов модели на датасеты TrustLLM.
-
-Использует Groq API (бесплатно, быстро).
-Регистрация и ключ: https://console.groq.com
-
 Запуск:
     python 01_generate.py --api_key gsk_xxx
     python 01_generate.py --api_key gsk_xxx --task hallucination --n 50
@@ -16,7 +12,7 @@ import time
 from pathlib import Path
 from openai import OpenAI
 
-# ─── Настройки ────────────────────────────────────────────────────────────────
+# Настройки 
 
 GROQ_BASE_URL = "https://api.groq.com/openai/v1"
 # Бесплатные модели на Groq (30 req/min, без лимита по токенам в сутки)
@@ -32,7 +28,7 @@ TASK_FILES = {
     "sycophancy":    DATASET_DIR / "truthfulness" / "sycophancy.json",
 }
 
-# ─── Запрос к API ─────────────────────────────────────────────────────────────
+# Запрос к API 
 
 def get_response(client: OpenAI, prompt: str, model: str,
                  max_tokens: int = 512, retries: int = 3) -> str | None:
@@ -53,7 +49,7 @@ def get_response(client: OpenAI, prompt: str, model: str,
     return None
 
 
-# ─── Генерация для одного файла ───────────────────────────────────────────────
+# Генерация для одного файла 
 
 def generate_for_file(task: str, client: OpenAI, model: str, n: int | None) -> Path:
     src_path = TASK_FILES[task]
@@ -95,7 +91,7 @@ def generate_for_file(task: str, client: OpenAI, model: str, n: int | None) -> P
     return out_path
 
 
-# ─── Main ─────────────────────────────────────────────────────────────────────
+# Main 
 
 def main():
     parser = argparse.ArgumentParser(description="TrustLLM: генерация ответов через Groq API")
