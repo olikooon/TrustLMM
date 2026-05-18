@@ -40,7 +40,7 @@
 | Jailbreak RtA | **0.930** | 0.625 | **Llama** |
 | Sycophancy delta | **0.117** | 0.042 | **Llama** |
 
-![Radar chart](results/radar.png)
+
 
 ---
 
