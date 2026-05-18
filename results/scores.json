@@ -1,0 +1,11 @@
+{
+  "sycophancy": 0.117,
+  "hallucination": {
+    "halu_qa": 0.16,
+    "halu_summ": 0.48,
+    "halu_dial": 0.24,
+    "mc": 0.64,
+    "avg": 0.38
+  },
+  "jailbreak_rta": 0.93
+}
